@@ -38,6 +38,7 @@ func (s *AWSSecretsManager) Secrets() (map[string]string, error) {
 	// find the config variable
 	asmConfig, ok := os.LookupEnv(asmConfigVar)
 	if !ok {
+		// this isn't an error, the feature is just unused
 		log.Printf("no env var %s for secret store %s", asmConfigVar, asmName)
 		return nil, nil
 	}

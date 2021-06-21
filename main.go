@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"log"
 	"strings"
@@ -36,22 +37,31 @@ func normalizeShellVar(i string) string {
 	}, i)
 }
 
-func main() {
-	stores := []SecretStore{
-		&AWSSecretsManager{},
-	}
-
-	var normalKey string
+// mergeSecrets gets the secrets from all the stores and merges them into a
+// single map. If two secret stores return a secret with the same key, the one
+// that will end up in the merged map is undefined. So keep them unique.
+func mergeSecrets(stores []SecretStore) (map[string]string, error) {
+	merged := map[string]string{}
 	for _, s := range stores {
 		secrets, err := s.Secrets()
 		if err != nil {
-			log.Fatalf("couldn't retrieve secrets from %s: %v", s.Name(), err)
+			return nil, fmt.Errorf("couldn't retrieve secrets from %s: %v", s.Name(),
+				err)
 		}
-		// TODO split this out for testability
 		for k, v := range secrets {
-			normalKey = normalizeShellVar(k)
-			fmt.Printf("EXTERNAL_SECRET_%s=%s; export EXTERNAL_SECRET_%s;\n",
-				normalKey, base64.StdEncoding.EncodeToString([]byte(v)), normalKey)
+			merged[normalizeShellVar(k)] =
+				base64.StdEncoding.EncodeToString([]byte(v))
 		}
 	}
+	return merged, nil
+}
+
+func main() {
+	merged, err := mergeSecrets([]SecretStore{
+		&AWSSecretsManager{},
+	})
+	if err != nil {
+		log.Fatalf("couldn't merge secrets: %v", err)
+	}
+	fmt.Println(json.Marshal(merged))
 }
