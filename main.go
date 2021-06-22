@@ -5,19 +5,34 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"os"
 	"strings"
 )
+
+// define the build environment variables containing Lagoon project and
+// environment variables
+const lagoonProjectVars = "LAGOON_PROJECT_VARIABLES"
+const lagoonEnvVars = "LAGOON_ENVIRONMENT_VARIABLES"
 
 // SecretStore represents an external secret store from which secrets can be
 // obtained for use in a Lagoon build.
 type SecretStore interface {
 	// Name returns a meaningful name for the secrets store.
 	Name() string
-	// Secrets returns the secrets available in this secret store as a map of
+	// Secrets takes a map of build-time environment variables as an argument,
+	// and returns the secrets available in this secret store as a map of
 	// key-value pairs.
 	// It may return a nil map and nil error if this secret store is not
 	// configured via the associated Lagoon environment variable.
-	Secrets() (map[string]string, error)
+	Secrets(map[string]string) (map[string]string, error)
+}
+
+// LagoonVar represents a Lagoon environment variable as found in the build
+// variables LAGOON_PROJECT_VARIABLES and LAGOON_ENVIRONMENT_VARIABLES.
+type LagoonVar struct {
+	Name  string
+	Value string
+	Scope string
 }
 
 // normalizeShellVar replaces characters not valid for shell variable names with
@@ -40,10 +55,10 @@ func normalizeShellVar(i string) string {
 // mergeSecrets gets the secrets from all the stores and merges them into a
 // single map. If two secret stores return a secret with the same key, the one
 // that will end up in the merged map is undefined. So keep them unique.
-func mergeSecrets(stores []SecretStore) (map[string]string, error) {
+func mergeSecrets(stores []SecretStore, buildVars map[string]string) (map[string]string, error) {
 	merged := map[string]string{}
 	for _, s := range stores {
-		secrets, err := s.Secrets()
+		secrets, err := s.Secrets(buildVars)
 		if err != nil {
 			return nil, fmt.Errorf("couldn't retrieve secrets from %s: %v", s.Name(),
 				err)
@@ -56,10 +71,39 @@ func mergeSecrets(stores []SecretStore) (map[string]string, error) {
 	return merged, nil
 }
 
+// lagoonBuildVars returns a map of build (and global) scoped lagoon variables
+// extracted from the process environment.
+func lagoonBuildVars() (map[string]string, error) {
+	buildVars := map[string]string{}
+	for _, envVar := range []string{lagoonProjectVars, lagoonEnvVars} {
+		// read variables from environment
+		varsJSON, ok := os.LookupEnv(envVar)
+		if !ok {
+			return nil, fmt.Errorf("couldn't find %s in environment", envVar)
+		}
+		// unmarshal JSON
+		var vars []LagoonVar
+		if err := json.Unmarshal([]byte(varsJSON), &vars); err != nil {
+			return nil, fmt.Errorf("couldn't unmarshal %s variables: %v", envVar, err)
+		}
+		// extract and store the build scoped variables
+		for _, v := range vars {
+			if v.Scope == "build" || v.Scope == "global" {
+				buildVars[v.Name] = v.Value
+			}
+		}
+	}
+	return buildVars, nil
+}
+
 func main() {
+	buildVars, err := lagoonBuildVars()
+	if err != nil {
+		log.Fatalf("couldn't get Lagoon build variables: %v", err)
+	}
 	merged, err := mergeSecrets([]SecretStore{
 		&AWSSecretsManager{},
-	})
+	}, buildVars)
 	if err != nil {
 		log.Fatalf("couldn't merge secrets: %v", err)
 	}

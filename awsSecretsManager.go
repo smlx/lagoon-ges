@@ -34,9 +34,10 @@ func (s *AWSSecretsManager) Name() string {
 }
 
 // Secrets returns a map of secret key values.
-func (s *AWSSecretsManager) Secrets() (map[string]string, error) {
+func (s *AWSSecretsManager) Secrets(
+	buildVars map[string]string) (map[string]string, error) {
 	// find the config variable
-	asmConfig, ok := os.LookupEnv(asmConfigVar)
+	asmConfig, ok := buildVars[asmConfigVar]
 	if !ok {
 		// this isn't an error, the feature is just unused
 		log.Printf("no env var %s for secret store %s", asmConfigVar, asmName)
