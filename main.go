@@ -4,17 +4,26 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/json"
+	"flag"
 	"fmt"
 	"log"
 	"os"
+	"os/signal"
 	"strings"
 	"time"
 )
 
-// define the build environment variables containing Lagoon project and
-// environment variables
-const lagoonProjectVars = "LAGOON_PROJECT_VARIABLES"
-const lagoonEnvVars = "LAGOON_ENVIRONMENT_VARIABLES"
+const (
+	// define the build environment variables containing Lagoon project and
+	// environment variables
+	lagoonProjectVars = "LAGOON_PROJECT_VARIABLES"
+	lagoonEnvVars     = "LAGOON_ENVIRONMENT_VARIABLES"
+	// exit code on interrupt
+	exitCodeInterrupt = 2
+)
+
+// default global timeout value
+var timeout = flag.Uint("timeout", 120, "timeout in seconds")
 
 // SecretStore represents an external secret store from which secrets can be
 // obtained for use in a Lagoon build.
@@ -99,15 +108,32 @@ func lagoonBuildVars() (map[string]string, error) {
 }
 
 func main() {
+	flag.Parse()
+	// handle ^C interrupt signals gracefully
+	ctx, cancel := context.WithDeadline(context.Background(),
+		time.Now().Add(time.Duration(*timeout)*time.Second))
+	signalChan := make(chan os.Signal, 1)
+	signal.Notify(signalChan, os.Interrupt)
+	defer func() {
+		signal.Stop(signalChan)
+		cancel()
+	}()
+	go func() {
+		select {
+		case <-signalChan:
+			log.Println("exiting. ^C again to force.")
+			cancel()
+		case <-ctx.Done():
+		}
+		<-signalChan
+		os.Exit(exitCodeInterrupt)
+	}()
 	// get Lagoon project/environment build variables from process environment
 	buildVars, err := lagoonBuildVars()
 	if err != nil {
 		log.Fatalf("couldn't get Lagoon build variables: %v", err)
 	}
 	// get variables from any configured secret stores
-	ctx, cancel := context.WithDeadline(context.Background(),
-		time.Now().Add(30*time.Second))
-	defer cancel()
 	merged, err := mergeSecrets([]SecretStore{
 		&AWSSecretsManager{ctx: ctx},
 	}, buildVars)
