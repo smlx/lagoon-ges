@@ -19,8 +19,8 @@ const asmName = "AWS Secrets Manager"
 
 // These environment variables are accessed by the AWS Go SDK to obtain
 // credentials.
-const awsAccessKeyVar = "AWS_ACCESS_KEY_ID"
-const awsSecretAccessKeyVar = "AWS_SECRET_ACCESS_KEY"
+const awsAccessKeyID = "AWS_ACCESS_KEY_ID"
+const awsSecretAccessKey = "AWS_SECRET_ACCESS_KEY"
 
 // ASMParseCreds takes a #-separated string containing ARN, API_KEY and
 // API_SECRET_KEY, splits them, and returns those variables. It also parses the
@@ -62,7 +62,7 @@ func (s *AWSSecretsManager) Secrets(
 				return nil, fmt.Errorf("couldn't parse %s value: %v", asmConfigVar, err)
 			}
 			// get the secrets using the credentials
-			err = s.GetSecrets(secrets, arn, accessKey, secretAccessKey, region)
+			err = s.getSecrets(secrets, arn, accessKey, secretAccessKey, region)
 			if err != nil {
 				return nil, fmt.Errorf("couldn't get secrets from %s: %v", asmName, err)
 			}
@@ -71,16 +71,16 @@ func (s *AWSSecretsManager) Secrets(
 	return secrets, nil
 }
 
-// GetSecrets retrieves secret values from AWS Secrets Manager and adds them
+// getSecrets retrieves secret values from AWS Secrets Manager and adds them
 // to the provided secrets map.
-func (s *AWSSecretsManager) GetSecrets(secrets map[string]string,
+func (s *AWSSecretsManager) getSecrets(secrets map[string]string,
 	arn, accessKey, secretAccessKey, region string) error {
 	// inject credentials into the environment so that the AWS SDK can find them
-	if err := os.Setenv(awsAccessKeyVar, accessKey); err != nil {
-		return fmt.Errorf("couldn't set environment var %v", awsAccessKeyVar)
+	if err := os.Setenv(awsAccessKeyID, accessKey); err != nil {
+		return fmt.Errorf("couldn't set environment var %v", awsAccessKeyID)
 	}
-	if err := os.Setenv(awsSecretAccessKeyVar, secretAccessKey); err != nil {
-		return fmt.Errorf("couldn't set environment var %v", awsSecretAccessKeyVar)
+	if err := os.Setenv(awsSecretAccessKey, secretAccessKey); err != nil {
+		return fmt.Errorf("couldn't set environment var %v", awsSecretAccessKey)
 	}
 	// load the AWS SDK configuration, including credentials
 	cfg, err := config.LoadDefaultConfig(s.ctx,
