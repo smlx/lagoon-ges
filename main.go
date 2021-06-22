@@ -1,12 +1,14 @@
 package main
 
 import (
+	"context"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"log"
 	"os"
 	"strings"
+	"time"
 )
 
 // define the build environment variables containing Lagoon project and
@@ -97,15 +99,21 @@ func lagoonBuildVars() (map[string]string, error) {
 }
 
 func main() {
+	// get Lagoon project/environment build variables from process environment
 	buildVars, err := lagoonBuildVars()
 	if err != nil {
 		log.Fatalf("couldn't get Lagoon build variables: %v", err)
 	}
+	// get variables from any configured secret stores
+	ctx, cancel := context.WithDeadline(context.Background(),
+		time.Now().Add(30*time.Second))
+	defer cancel()
 	merged, err := mergeSecrets([]SecretStore{
-		&AWSSecretsManager{},
+		&AWSSecretsManager{ctx: ctx},
 	}, buildVars)
 	if err != nil {
 		log.Fatalf("couldn't merge secrets: %v", err)
 	}
+	// print JSON-formatted variables to stdout
 	fmt.Println(json.Marshal(merged))
 }
