@@ -51,5 +51,9 @@ func main() {
 		log.Fatalf("couldn't merge secrets: %v", err)
 	}
 	// print JSON-formatted variables to stdout
-	fmt.Println(json.Marshal(merged))
+	output, err := json.Marshal(merged)
+	if err != nil {
+		log.Fatalf("couldn't marshal JSON: %v", err)
+	}
+	fmt.Println(string(output))
 }

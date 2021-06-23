@@ -30,9 +30,19 @@ func ASMParseCreds(creds string) (string, string, string, string, error) {
 	if len(parts) != 3 {
 		return "", "", "", "", fmt.Errorf("invalid credential format")
 	}
+	for _, p := range parts {
+		if len(p) == 0 {
+			return "", "", "", "", fmt.Errorf("invalid credential format")
+		}
+	}
 	arnParts := strings.Split(parts[0], ":")
-	if len(arnParts) < 7 {
-		return "", "", "", "", fmt.Errorf("invalid credential format")
+	if len(arnParts) != 7 {
+		return "", "", "", "", fmt.Errorf("invalid ARN")
+	}
+	for _, p := range arnParts {
+		if len(p) == 0 {
+			return "", "", "", "", fmt.Errorf("invalid ARN")
+		}
 	}
 	return parts[0], parts[1], parts[2], arnParts[3], nil
 }

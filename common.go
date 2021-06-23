@@ -68,7 +68,7 @@ func MergeSecrets(stores []SecretStore,
 				err)
 		}
 		for k, v := range secrets {
-			merged[NormalizeShellVar(k)] =
+			merged[fmt.Sprintf("EXTERNAL_SECRET_%s", NormalizeShellVar(k))] =
 				base64.StdEncoding.EncodeToString([]byte(v))
 		}
 	}

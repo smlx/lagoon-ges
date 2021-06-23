@@ -56,7 +56,10 @@ func TestMergeSecrets(t *testing.T) {
 				},
 			},
 			expect: map[string]string{
-				"FOO": "Zm9v", "BAR": "YmFy", "BAZ": "YmF6", "QUUX": "cXV1eA==",
+				"EXTERNAL_SECRET_FOO":  "Zm9v",
+				"EXTERNAL_SECRET_BAR":  "YmFy",
+				"EXTERNAL_SECRET_BAZ":  "YmF6",
+				"EXTERNAL_SECRET_QUUX": "cXV1eA==",
 			},
 		},
 	}
