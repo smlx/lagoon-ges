@@ -83,7 +83,11 @@ func LagoonBuildVars() (map[string]string, error) {
 		// read variables from environment
 		varsJSON, ok := os.LookupEnv(envVar)
 		if !ok {
-			return nil, fmt.Errorf("couldn't find %s in environment", envVar)
+			// variable is not set in process environment.
+			// this is OK because these variables are optional. see:
+			// https://github.com/amazeeio/lagoon-kbd/blob/main/
+			// 	controllers/lagoonbuild_controller.go
+			continue
 		}
 		// unmarshal JSON
 		var vars []lagoonVar
