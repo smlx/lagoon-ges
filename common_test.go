@@ -121,6 +121,14 @@ func TestLagoonBuildVars(t *testing.T) {
 			main.LagoonProjectVars: `[]`,
 			main.LagoonEnvVars:     `[]`,
 		}, expect: map[string]string{}},
+		"missingEnvironmentVariable0": {input: map[string]string{
+			main.LagoonEnvVars: `[]`,
+		}, expect: map[string]string{}},
+		"missingEnvironmentVariable1": {input: map[string]string{
+			main.LagoonProjectVars: `[]`,
+		}, expect: map[string]string{}},
+		"missingEnvironmentVariable2": {input: map[string]string{},
+			expect: map[string]string{}},
 	}
 	for name, tc := range testCases {
 		t.Run(name, func(tt *testing.T) {
