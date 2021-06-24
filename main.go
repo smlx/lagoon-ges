@@ -45,6 +45,7 @@ func main() {
 	}
 	// get variables from any configured secret stores
 	merged, err := MergeSecrets([]SecretStore{
+		&MockBackend{ctx: ctx},
 		&AWSSecretsManager{ctx: ctx},
 	}, buildVars)
 	if err != nil {
