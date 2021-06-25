@@ -15,11 +15,20 @@
 
 set -eu
 
+# Mock backend
+
 export LAGOON_PROJECT_VARIABLES='[{
 	"name": "LAGOON_EXTERNAL_SECRETS_MOCK_BACKEND",
 	"value": "does not matter",
 	"scope": "build"
 }]'
-export LAGOON_ENVIRONMENT_VARIABLES='[]'
+
+# AWS Secrets Manager backend
+#
+# export LAGOON_PROJECT_VARIABLES='[{
+# 	"name": "LAGOON_EXTERNAL_SECRETS_AWS_SECRETS_MANAGER",
+# 	"value": "<ARN>#<API_KEY>#<API_SECRET_KEY>",
+# 	"scope": "build"
+# }]'
 
 ./lagoon-ges
