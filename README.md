@@ -12,9 +12,9 @@
 ## Backend support status
 
 * [x] Mock (used in CI testing)
-* [x] AWS Secrets Manager
-* [x] Google Secret Manager
-* [ ] Azure Key Vault
+* [x] [AWS Secrets Manager](https://aws.amazon.com/secrets-manager)
+* [x] [Google Secret Manager](https://cloud.google.com/secret-manager)
+* [ ] [Azure Key Vault](https://azure.microsoft.com/en-au/services/key-vault/)
 
 ## How it works
 
@@ -26,11 +26,11 @@ Each backend has an associated build variable prefix set out in the table below.
 If a build variable with this prefix is defined, `lagoon-ges` will interpret it as credentials for the given secret storage backend.
 Multiple variables for one or more secret storage backends may be defined.
 
-| Secret Storage backend                                           | Lagoon build variable prefix                    | Value format                                    |
-| ---                                                              | ---                                             | ---                                             |
-| Mock (testing only)                                              | `LAGOON_EXTERNAL_SECRETS_MOCK_BACKEND`          | n/a (value is ignored)                          |
-| [AWS Secrets Manager](https://aws.amazon.com/secrets-manager)    | `LAGOON_EXTERNAL_SECRETS_AWS_SECRETS_MANAGER`   | `<ARN>#<API_KEY>#<API_SECRET_KEY>`              |
-| [Google Secret Manager](https://cloud.google.com/secret-manager) | `LAGOON_EXTERNAL_SECRETS_GOOGLE_SECRET_MANAGER` | `<RESOURCE_ID>#<API_KEY_JSON (base64 encoded)>` |
+| Secret Storage backend | Lagoon build variable prefix                    | Value format                                    |
+| ---                    | ---                                             | ---                                             |
+| Mock (testing only)    | `LAGOON_EXTERNAL_SECRETS_MOCK_BACKEND`          | n/a (value is ignored)                          |
+| AWS Secrets Manager    | `LAGOON_EXTERNAL_SECRETS_AWS_SECRETS_MANAGER`   | `<ARN>#<API_KEY>#<API_SECRET_KEY>`              |
+| Google Secret Manager  | `LAGOON_EXTERNAL_SECRETS_GOOGLE_SECRET_MANAGER` | `<RESOURCE_ID>#<API_KEY_JSON (base64 encoded)>` |
 
 ## How to use it
 
