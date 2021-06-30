@@ -69,12 +69,12 @@ func (s *AWSSecretsManager) Secrets(
 			// extract the secret store credentials
 			arn, accessKey, secretAccessKey, region, err := ASMParseCreds(v)
 			if err != nil {
-				return nil, fmt.Errorf("couldn't parse %s value: %v", asmConfigVar, err)
+				return nil, fmt.Errorf("couldn't parse %s value: %v", k, err)
 			}
 			// get the secrets using the credentials
 			err = s.getSecrets(secrets, arn, accessKey, secretAccessKey, region)
 			if err != nil {
-				return nil, fmt.Errorf("couldn't get secrets from %s: %v", asmName, err)
+				return nil, fmt.Errorf("couldn't get secrets from %s for %s: %v", asmName, k, err)
 			}
 		}
 	}
