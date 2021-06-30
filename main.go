@@ -47,6 +47,7 @@ func main() {
 	merged, err := MergeSecrets([]SecretStore{
 		&MockBackend{ctx: ctx},
 		&AWSSecretsManager{ctx: ctx},
+		&GoogleSecretManager{ctx: ctx},
 	}, buildVars)
 	if err != nil {
 		log.Fatalf("couldn't merge secrets: %v", err)
