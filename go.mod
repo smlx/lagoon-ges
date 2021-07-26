@@ -6,6 +6,6 @@ require (
 	cloud.google.com/go v0.88.0
 	github.com/aws/aws-sdk-go-v2/config v1.5.0
 	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.4.1
-	google.golang.org/api v0.50.0
+	google.golang.org/api v0.51.0
 	google.golang.org/genproto v0.0.0-20210721163202-f1cecdd8b78a
 )
