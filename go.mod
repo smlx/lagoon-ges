@@ -3,7 +3,7 @@ module github.com/smlx/lagoon-ges
 go 1.16
 
 require (
-	cloud.google.com/go/secretmanager v0.1.0
+	cloud.google.com/go/secretmanager v1.0.0
 	github.com/aws/aws-sdk-go-v2/config v1.10.2
 	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.10.1
 	google.golang.org/api v0.60.0
