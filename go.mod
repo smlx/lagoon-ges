@@ -4,7 +4,7 @@ go 1.16
 
 require (
 	cloud.google.com/go/secretmanager v1.3.0
-	github.com/aws/aws-sdk-go-v2/config v1.15.1
+	github.com/aws/aws-sdk-go-v2/config v1.15.2
 	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.15.3
 	google.golang.org/api v0.73.0
 	google.golang.org/genproto v0.0.0-20220310185008-1973136f34c6
