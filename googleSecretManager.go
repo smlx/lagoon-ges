@@ -7,8 +7,8 @@ import (
 	"strings"
 
 	secretmanager "cloud.google.com/go/secretmanager/apiv1"
+	"cloud.google.com/go/secretmanager/apiv1/secretmanagerpb"
 	"google.golang.org/api/option"
-	secretmanagerpb "google.golang.org/genproto/googleapis/cloud/secretmanager/v1"
 )
 
 // LAGOON_EXTERNAL_SECRETS_GOOGLE_SECRET_MANAGER must contain the RESOURCE_ID
