@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	cloud.google.com/go/secretmanager v1.10.1
-	github.com/aws/aws-sdk-go-v2/config v1.18.24
+	github.com/aws/aws-sdk-go-v2/config v1.18.25
 	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.19.7
 	google.golang.org/api v0.122.0
 )
@@ -14,7 +14,7 @@ require (
 	cloud.google.com/go/compute/metadata v0.2.3 // indirect
 	cloud.google.com/go/iam v0.13.0 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.18.0 // indirect
-	github.com/aws/aws-sdk-go-v2/credentials v1.13.23 // indirect
+	github.com/aws/aws-sdk-go-v2/credentials v1.13.24 // indirect
 	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.13.3 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/configsources v1.1.33 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.4.27 // indirect
