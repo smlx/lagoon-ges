@@ -6,7 +6,7 @@ require (
 	cloud.google.com/go/secretmanager v1.11.1
 	github.com/aws/aws-sdk-go-v2/config v1.18.33
 	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.21.0
-	google.golang.org/api v0.136.0
+	google.golang.org/api v0.137.0
 )
 
 require (
@@ -27,7 +27,7 @@ require (
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/google/go-cmp v0.5.9 // indirect
-	github.com/google/s2a-go v0.1.4 // indirect
+	github.com/google/s2a-go v0.1.5 // indirect
 	github.com/googleapis/enterprise-certificate-proxy v0.2.5 // indirect
 	github.com/googleapis/gax-go/v2 v2.12.0 // indirect
 	go.opencensus.io v0.24.0 // indirect
