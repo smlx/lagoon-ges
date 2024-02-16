@@ -5,7 +5,7 @@ go 1.19
 require (
 	cloud.google.com/go/secretmanager v1.11.5
 	github.com/aws/aws-sdk-go-v2/config v1.27.0
-	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.27.0
+	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.27.1
 	google.golang.org/api v0.165.0
 )
 
